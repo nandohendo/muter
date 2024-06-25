@@ -5,7 +5,7 @@ typealias VisitorInitializer = (MuterConfiguration?, SourceCodeInfo, [Region]) -
 typealias MutationOperatorList = [MutationOperator.Id]
 
 extension [MutationOperator.Id] {
-    static var allOperators = MutationOperator.Id.allCases
+	static var allOperators = [MutationOperator.Id.ror, MutationOperator.Id.logicalOperator]
 }
 
 enum MutationOperator {
