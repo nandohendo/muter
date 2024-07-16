@@ -45,7 +45,7 @@ struct MutationTestingDelegate: MutationTestingIODelegate {
 
             try process.run()
 
-            process.waitUntilExit()
+			process.waitUntilExit()
 
             let contents = try String(contentsOf: testLogUrl)
 

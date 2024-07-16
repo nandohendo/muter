@@ -6,6 +6,7 @@ extension Run {
     struct Options {
         let reportOptions: ReportOptions
         let filesToMutate: [String]
+		let unitTestFile: [String]
         let mutationOperatorsList: MutationOperatorList
         let skipCoverage: Bool
         let skipUpdateCheck: Bool
@@ -18,6 +19,7 @@ extension Run {
 
         init(
             filesToMutate: [String] = [],
+			unitTestFile: [String] = [],
             reportFormat: ReportFormat = .plain,
             reportURL: URL? = nil,
             mutationOperatorsList: MutationOperatorList = .allOperators,
@@ -27,6 +29,7 @@ extension Run {
             testPlanURL: URL? = nil,
             createTestPlan: Bool = false
         ) {
+			self.unitTestFile = unitTestFile
             self.skipCoverage = skipCoverage
             self.skipUpdateCheck = skipUpdateCheck
             self.createTestPlan = createTestPlan
@@ -51,6 +54,7 @@ extension Run {
 extension Run.Options: Equatable {
     static func == (lhs: Run.Options, rhs: Run.Options) -> Bool {
         lhs.filesToMutate == rhs.filesToMutate &&
+		lhs.unitTestFile == rhs.unitTestFile &&
             lhs.mutationOperatorsList == rhs.mutationOperatorsList &&
             lhs.skipCoverage == rhs.skipCoverage &&
             lhs.skipUpdateCheck == rhs.skipUpdateCheck &&
@@ -65,6 +69,7 @@ extension Run.Options: Nullable {
     static var null: Run.Options {
         .init(
             filesToMutate: [],
+			unitTestFile: [],
             reportFormat: .plain,
             reportURL: nil,
             mutationOperatorsList: [],

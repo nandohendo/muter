@@ -25,7 +25,7 @@ struct BuildForTesting: MutationStep {
 
         do {
             let buildDirectory = try buildDirectory(state.muterConfiguration)
-            try runBuildForTestingCommand(state.muterConfiguration)
+			try runBuildForTestingCommand(state.muterConfiguration, unitTestFiles: state.unitTestFiles)
             let tempDebugURL = debugURLForTempDirectory(state.mutatedProjectDirectoryURL)
             try copyBuildArtifactsAtPath(buildDirectory, to: tempDebugURL.path)
 
@@ -45,6 +45,8 @@ struct BuildForTesting: MutationStep {
             throw MuterError.literal(reason: "Could not find `BUILD_DIR`")
         }
 
+        print("testing: \(buildSettings)")
+
         guard let buildDirectory = buildSettings
             .firstMatchOf("BUILD_DIR = (.+)")?
             .replacingOccurrences(of: "BUILD_DIR = ", with: "")
@@ -57,11 +59,24 @@ struct BuildForTesting: MutationStep {
     }
 
     private func runBuildForTestingCommand(
-        _ configuration: MuterConfiguration
+        _ configuration: MuterConfiguration,
+		unitTestFiles: [String] = []
     ) throws {
+		
+		var arguments = configuration.buildForTestingArguments
+		
+		if !unitTestFiles.isEmpty {
+			
+			let unitTestPath: [String] = unitTestFiles.map { unitTestFile in
+				return "-only-testing:\(unitTestFile)"
+			}
+			
+			arguments += unitTestPath
+		}
+		
         guard let _: String = process().runProcess(
             url: configuration.testCommandExecutable,
-            arguments: configuration.buildForTestingArguments
+            arguments: arguments
         ).flatMap(\.nilIfEmpty)
         else {
             throw MuterError.literal(reason: "Could not run test with -build-for-testing argument")

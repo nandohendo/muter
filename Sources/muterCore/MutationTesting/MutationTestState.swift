@@ -16,6 +16,7 @@ protocol AnyMutationTestState: AnyObject {
     var mutationMapping: [SchemataMutationMapping] { get }
     var sourceCodeByFilePath: [FilePath: SourceFileSyntax] { get }
     var filesToMutate: [String] { get }
+	var unitTestFiles: [String] { get }
     var swapFilePathsByOriginalPath: [FilePath: FilePath] { get }
     var mutationTestOutcome: MutationTestOutcome { get }
 
@@ -26,6 +27,7 @@ final class MutationTestState: AnyMutationTestState {
     var runOptions: Run.Options = .null
     var mutationOperatorList: MutationOperatorList = []
     var filesToMutate: [String] = []
+	var unitTestFiles: [String] = []
     var newVersion: String = ""
     var mutationTestingStartTime: Date = .init()
     var muterConfiguration: MuterConfiguration = .init()
@@ -46,6 +48,7 @@ final class MutationTestState: AnyMutationTestState {
         runOptions = options
         mutationOperatorList = options.mutationOperatorsList
         filesToMutate = options.filesToMutate
+		unitTestFiles = options.unitTestFile
     }
 }
 

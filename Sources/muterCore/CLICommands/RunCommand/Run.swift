@@ -9,6 +9,9 @@ struct Run: RunCommand {
 
     @Option(help: "Only mutate a given list of source code files.")
     var filesToMutate: [String] = []
+	
+	@Option(help: "Only include selected unit test")
+	var unitTestFile: [String] = []
 
     @Option(
         parsing: .upToNextOption,
@@ -21,7 +24,7 @@ struct Run: RunCommand {
             return `operator`
         }
     )
-    var operators: [MutationOperator.Id] = MutationOperator.Id.allCases
+	var operators: [MutationOperator.Id] = [.logicalOperator]
 
     @OptionGroup var options: RunArguments
     @OptionGroup var reportOptions: ReportArguments
@@ -35,6 +38,7 @@ struct Run: RunCommand {
 
         let options = Run.Options(
             filesToMutate: filesToMutate,
+			unitTestFile: unitTestFile,
             reportFormat: reportOptions.reportFormat,
             reportURL: reportOptions.reportURL,
             mutationOperatorsList: mutationOperatorsList,
