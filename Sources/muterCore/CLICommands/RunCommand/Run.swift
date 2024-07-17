@@ -8,16 +8,10 @@ struct Run: RunCommand {
     )
 
     @Option(help: "Only mutate a given list of source code files.")
-    var filesToMutate: [String] = [
-		"Sources/ViewModels/MutationViewModel.swift",
-		"Sources/ViewModels/CardBindingViewModel.swift"
-	]
+    var filesToMutate: [String] = []
 	
 	@Option(help: "Only include selected unit test")
-	var unitTestFile: [String] = [
-		"CardBindingTests/MutationViewModelSpec.swift",
-		"CardBindingTests/CardBindingViewModelSpec.swift"
-	]
+	var unitTestFile: [String] = []
 
     @Option(
         parsing: .upToNextOption,
