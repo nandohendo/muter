@@ -29,7 +29,7 @@ struct BuildForTesting: MutationStep {
             let tempDebugURL = debugURLForTempDirectory(state.mutatedProjectDirectoryURL)
             try copyBuildArtifactsAtPath(buildDirectory, to: tempDebugURL.path)
 
-            let xcTestRun = try parseXCTestRunAt(tempDebugURL)
+			let xcTestRun = try parseXCTestRunAt(tempDebugURL, unitTestFiles: state.unitTestFiles)
 
             return [.projectXCTestRun(xcTestRun)]
         } catch {
@@ -117,7 +117,7 @@ struct BuildForTesting: MutationStep {
         )
     }
 
-    private func parseXCTestRunAt(_ url: URL) throws -> XCTestRun {
+	private func parseXCTestRunAt(_ url: URL, unitTestFiles: [String]) throws -> XCTestRun {
         let xcTestRunPath = try findMostRecentXCTestRunAtURL(url)
         guard let contents = fileManager.contents(atPath: xcTestRunPath),
               let stringContents = String(data: contents, encoding: .utf8)
@@ -144,7 +144,19 @@ struct BuildForTesting: MutationStep {
 		if var testConfiguration = plist["TestConfigurations"] as? [[String: AnyHashable]],
 		   var testTargets = (testConfiguration.first)?["TestTargets"] as? [[String: AnyHashable]],
 		   var testTargetItem = testTargets.first {
-			testTargetItem["OnlyTestIdentifiers"] = ["MutationViewModelSpec", "CardBindingViewModelSpec"]
+			
+			var onlyTestIdentifiers: [String] = []
+			
+			unitTestFiles.forEach { filePath in
+				guard let getLastPath = filePath.split(separator: "/").last else {
+					return
+				}
+				
+				let filename = String(getLastPath).replacingOccurrences(of: ".swift", with: "")
+				onlyTestIdentifiers.append(filename)
+			}
+			
+			testTargetItem["OnlyTestIdentifiers"] = onlyTestIdentifiers
 			testTargets[0] = testTargetItem
 			testConfiguration[0]["TestTargets"] = testTargets
 			plist["TestConfigurations"] = testConfiguration
