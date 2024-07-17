@@ -74,13 +74,17 @@ struct BuildForTesting: MutationStep {
 			arguments += unitTestPath
 		}
 		
-        guard let _: String = process().runProcess(
+		print(arguments)
+		
+        guard let result: String = process().runProcess(
             url: configuration.testCommandExecutable,
             arguments: arguments
         ).flatMap(\.nilIfEmpty)
         else {
             throw MuterError.literal(reason: "Could not run test with -build-for-testing argument")
         }
+		
+		print(result)
     }
 
     private func findBuildRequestJsonPath(_ output: String) throws -> String {
@@ -128,15 +132,29 @@ struct BuildForTesting: MutationStep {
         else {
             throw MuterError.literal(reason: "Error error")
         }
-
-        guard let plist = try PropertyListSerialization.propertyList(
+		
+        guard var plist = try PropertyListSerialization.propertyList(
             from: replaced,
             format: nil
         ) as? [String: AnyHashable]
         else {
             throw MuterError.literal(reason: "Could not parse xctestrun as plist at path: \(xcTestRunPath)")
         }
-
+		
+		if var testConfiguration = plist["TestConfigurations"] as? [[String: AnyHashable]],
+		   var testTargets = (testConfiguration.first)?["TestTargets"] as? [[String: AnyHashable]],
+		   var testTargetItem = testTargets.first {
+			testTargetItem["OnlyTestIdentifiers"] = ["MutationViewModelSpec"]
+			testTargets[0]["TestTargets"] = testTargetItem
+			
+			// Update the test configuration with the modified test targets
+			testConfiguration[0]["TestTargets"] = testTargets
+			
+			// Update the plist with the modified test configurations
+			plist["TestConfigurations"] = testConfiguration
+		}
+		
+		print(plist)
         return XCTestRun(plist)
     }
 

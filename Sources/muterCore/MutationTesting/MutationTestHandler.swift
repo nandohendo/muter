@@ -56,12 +56,12 @@ final class MutationTestHandler {
 
 private extension [MutationStep] {
     static let allSteps: [MutationStep] = [
-        UpdateCheck(),
+//        UpdateCheck(),
         LoadConfiguration(),
         CreateMutatedProjectDirectoryURL(),
         PreviousRunCleanUp(),
         CopyProjectToTempDirectory(),
-        DiscoverProjectCoverage(),
+//        DiscoverProjectCoverage(),
         DiscoverSourceFiles(),
         DiscoverMutationPoints(),
         CreateMuterTestPlan(),
@@ -73,7 +73,7 @@ private extension [MutationStep] {
     ]
 
     static let testPlanSteps: [MutationStep] = [
-        UpdateCheck(),
+//        UpdateCheck(),
         LoadConfiguration(),
         LoadMuterTestPlan(),
         BuildForTesting(),
@@ -82,12 +82,12 @@ private extension [MutationStep] {
     ]
 
     static let createTestPlanSteps: [MutationStep] = [
-        UpdateCheck(),
+//        UpdateCheck(),
         LoadConfiguration(),
         CreateMutatedProjectDirectoryURL(),
         PreviousRunCleanUp(),
         CopyProjectToTempDirectory(),
-        DiscoverProjectCoverage(),
+//        DiscoverProjectCoverage(),
         DiscoverSourceFiles(),
         DiscoverMutationPoints(),
         ApplySchemata(),

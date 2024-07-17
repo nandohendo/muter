@@ -34,7 +34,7 @@ extension Run {
             self.skipUpdateCheck = skipUpdateCheck
             self.createTestPlan = createTestPlan
             self.mutationOperatorsList = mutationOperatorsList
-            self.configurationURL = configurationURL
+            self.configurationURL = URL(string: "/Users/jonathanm/Documents/DANA-Project/card_binding_flow_ios")
             self.testPlanURL = testPlanURL
 
             self.filesToMutate = filesToMutate.reduce(into: []) { accum, next in

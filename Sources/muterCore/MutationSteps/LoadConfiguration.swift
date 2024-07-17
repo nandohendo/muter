@@ -37,7 +37,7 @@ struct LoadConfiguration: MutationStep {
             }
 
             return [
-                .projectDirectoryUrlDiscovered(URL(fileURLWithPath: fileManager.currentDirectoryPath)),
+				.projectDirectoryUrlDiscovered(URL(string: "/Users/jonathanm/Documents/DANA-Project/card_binding_flow_ios")!),
                 .configurationParsed(configuration),
             ]
         } catch {
