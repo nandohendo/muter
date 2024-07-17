@@ -145,16 +145,17 @@ struct BuildForTesting: MutationStep {
 		   var testTargets = (testConfiguration.first)?["TestTargets"] as? [[String: AnyHashable]],
 		   var testTargetItem = testTargets.first {
 			testTargetItem["OnlyTestIdentifiers"] = ["MutationViewModelSpec", "CardBindingViewModelSpec"]
-			testTargets[0]["TestTargets"] = testTargetItem
-			
-			// Update the test configuration with the modified test targets
+			testTargets[0] = testTargetItem
 			testConfiguration[0]["TestTargets"] = testTargets
-			
-			// Update the plist with the modified test configurations
 			plist["TestConfigurations"] = testConfiguration
 		}
 		
-		print(plist)
+		let data = try PropertyListSerialization.data(
+			fromPropertyList: plist,
+			format: .xml,
+			options: 0
+		)
+
         return XCTestRun(plist)
     }
 
