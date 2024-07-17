@@ -144,7 +144,7 @@ struct BuildForTesting: MutationStep {
 		if var testConfiguration = plist["TestConfigurations"] as? [[String: AnyHashable]],
 		   var testTargets = (testConfiguration.first)?["TestTargets"] as? [[String: AnyHashable]],
 		   var testTargetItem = testTargets.first {
-			testTargetItem["OnlyTestIdentifiers"] = ["MutationViewModelSpec"]
+			testTargetItem["OnlyTestIdentifiers"] = ["MutationViewModelSpec", "CardBindingViewModelSpec"]
 			testTargets[0]["TestTargets"] = testTargetItem
 			
 			// Update the test configuration with the modified test targets
