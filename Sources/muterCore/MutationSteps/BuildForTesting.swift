@@ -45,7 +45,7 @@ struct BuildForTesting: MutationStep {
             throw MuterError.literal(reason: "Could not find `BUILD_DIR`")
         }
 
-        print("testing: \(buildSettings)")
+       // print("testing: \(buildSettings)")
 
         guard let buildDirectory = buildSettings
             .firstMatchOf("BUILD_DIR = (.+)")?
