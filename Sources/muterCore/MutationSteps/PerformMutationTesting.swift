@@ -99,9 +99,14 @@ private extension PerformMutationTesting {
         for mutationMap in state.mutationMapping {
             for mutationSchema in mutationMap.mutationSchemata {
 
+				guard let modifiedXCTestRun = try parseXCTestRunAt(state.projectXCTestRun, unitTestFiles: state.unitTestFiles) else {
+					throw MuterError.literal(reason: "Could not parse modified xctestrun at path")
+				}
+				
+				print("Modify xctestrun")
                 try? ioDelegate.switchOn(
                     schemata: mutationSchema,
-                    for: state.projectXCTestRun,
+                    for: modifiedXCTestRun,
                     at: state.mutatedProjectDirectoryURL
                 )
 
@@ -156,6 +161,72 @@ private extension PerformMutationTesting {
 
         return outcomes
     }
+	
+	private func parseXCTestRunAt(_ xcTestRun: XCTestRun, unitTestFiles: [String]) throws -> XCTestRun? {
+//		let xcTestRunPath = try findMostRecentXCTestRunAtURL(url)
+//		guard let contents = fileManager.contents(atPath: xcTestRunPath),
+//			  let stringContents = String(data: contents, encoding: .utf8)
+//		else {
+//			throw MuterError.literal(reason: "Could not parse xctestrun at path: \(xcTestRunPath)")
+//		}
+//		
+//		
+//
+//		guard let replaced = stringContents.replacingOccurrences(
+//			of: "__TESTROOT__/",
+//			with: "__TESTROOT__/Debug/"
+//		).data(using: .utf8)
+//		else {
+//			throw MuterError.literal(reason: "Error error")
+//		}
+		
+		var modifiedPlist = xcTestRun.plist
+//		guard var plist = try xcTestRun.plist
+//		else {
+//			throw MuterError.literal(reason: "Could not parse xctestrun as plist at path: \(xcTestRunPath)")
+//		}
+		
+		if var testConfiguration = modifiedPlist["TestConfigurations"] as? [[String: AnyHashable]],
+		   var testTargets = (testConfiguration.first)?["TestTargets"] as? [[String: AnyHashable]],
+		   var testTargetItem = testTargets.first {
+			
+			var onlyTestIdentifiers: [String] = []
+			
+			unitTestFiles.forEach { filePath in
+				guard let getLastPath = filePath.split(separator: "/").last else {
+					return
+				}
+				
+				let filename = String(getLastPath).replacingOccurrences(of: ".swift", with: "")
+				onlyTestIdentifiers.append(filename)
+			}
+			
+			testTargetItem["OnlyTestIdentifiers"] = onlyTestIdentifiers
+			testTargets[0] = testTargetItem
+			testConfiguration[0]["TestTargets"] = testTargets
+			modifiedPlist["TestConfigurations"] = testConfiguration
+		}
+		
+		let data = try PropertyListSerialization.data(
+			fromPropertyList: modifiedPlist,
+			format: .xml,
+			options: 0
+		)
+
+		return XCTestRun(modifiedPlist)
+	}
+	
+	private func findMostRecentXCTestRunAtURL(_ url: URL) throws -> String {
+		guard let xctestrun = try fileManager.contents(
+			atPath: url.path,
+			sortedByDate: .orderedDescending
+		).first(where: { $0.hasSuffix(".xctestrun") })
+		else {
+			throw MuterError.literal(reason: "Could not find xctestrun file at path: \(url.path)")
+		}
+
+		return xctestrun
+	}
 
     func logFileName(
         for fileName: FileName,

@@ -1,7 +1,7 @@
 import Foundation
 
 struct XCTestRun: Equatable {
-    private let plist: [String: AnyHashable]
+    let plist: [String: AnyHashable]
 
     init(_ plist: [String: AnyHashable] = [:]) {
         self.plist = plist

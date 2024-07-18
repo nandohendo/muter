@@ -22,7 +22,7 @@ else
     rm new_muter_version.zip
 
     echo "Updating Homebrew formula..."
-    python ./Scripts/bump_version.py $1 $SHA
+    python3 ./Scripts/bump_version.py $1 $SHA
 
     echo "Uninstalling old version..."
     make uninstall
