@@ -29,7 +29,6 @@ extension Run {
             testPlanURL: URL? = nil,
             createTestPlan: Bool = false
         ) {
-			self.unitTestFile = unitTestFile
             self.skipCoverage = skipCoverage
             self.skipUpdateCheck = skipUpdateCheck
             self.createTestPlan = createTestPlan
@@ -43,6 +42,13 @@ extension Run {
                         .exclude { $0.isEmpty }
                 )
             }
+			
+			self.unitTestFile = unitTestFile.reduce(into: []) { accum, next in
+				accum.append(
+					contentsOf: next.components(separatedBy: ",")
+						.exclude { $0.isEmpty }
+				)
+			}
 
             reportOptions = ReportOptions(
                 reporter: reportFormat.reporter,
