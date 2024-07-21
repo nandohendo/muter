@@ -2,6 +2,7 @@ public enum MutationTestingAbortReason: Equatable {
     case baselineTestFailed(log: String)
     case tooManyBuildErrors
     case unknownError(description: String)
+	case mutationLimit
 }
 
 extension MutationTestingAbortReason: CustomStringConvertible {
@@ -34,6 +35,11 @@ extension MutationTestingAbortReason: CustomStringConvertible {
 
         case let .unknownError(error):
             return "Muter encountered an error running your test suite and can't continue\n\(error)"
+			
+		case .mutationLimit:
+			return """
+			  Stopping mutation test early to save time on gatecheck
+			"""
         }
     }
 }

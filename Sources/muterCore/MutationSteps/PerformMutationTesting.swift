@@ -99,6 +99,10 @@ private extension PerformMutationTesting {
         for mutationMap in state.mutationMapping {
             for mutationSchema in mutationMap.mutationSchemata {
 
+				if outcomes.count == 5 {
+					throw MuterError.mutationTestingAborted(reason: .mutationLimit)
+				}
+				
                 try? ioDelegate.switchOn(
                     schemata: mutationSchema,
                     for: state.projectXCTestRun,
