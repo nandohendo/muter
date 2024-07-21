@@ -100,7 +100,7 @@ private extension PerformMutationTesting {
             for mutationSchema in mutationMap.mutationSchemata {
 
 				if outcomes.count == 5 {
-					throw MuterError.mutationTestingAborted(reason: .mutationLimit)
+					return outcomes
 				}
 				
                 try? ioDelegate.switchOn(
