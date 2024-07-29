@@ -19,6 +19,7 @@ protocol AnyMutationTestState: AnyObject {
 	var unitTestFiles: [String] { get }
     var swapFilePathsByOriginalPath: [FilePath: FilePath] { get }
     var mutationTestOutcome: MutationTestOutcome { get }
+	var mutationLimit: Int { get }
 
     func apply(_ stateChanges: [MutationTestState.Change])
 }
@@ -41,6 +42,7 @@ final class MutationTestState: AnyMutationTestState {
     var sourceCodeByFilePath: [FilePath: SourceFileSyntax] = [:]
     var swapFilePathsByOriginalPath: [FilePath: FilePath] = [:]
     var mutationTestOutcome: MutationTestOutcome = .init()
+	var mutationLimit: Int = 25
 
     init() {}
 
@@ -49,6 +51,7 @@ final class MutationTestState: AnyMutationTestState {
         mutationOperatorList = options.mutationOperatorsList
         filesToMutate = options.filesToMutate
 		unitTestFiles = options.unitTestFile
+		mutationLimit = options.mutationLimit
     }
 }
 

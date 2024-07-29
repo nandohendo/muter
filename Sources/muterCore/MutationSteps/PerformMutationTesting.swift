@@ -104,7 +104,7 @@ private extension PerformMutationTesting {
             for mutationSchema in mutationMap.mutationSchemata {
 
 				// Limit mutation count to avoid blocking gatecheck queue for too long
-				if outcomes.count == 25 {
+				if outcomes.count == state.mutationLimit {
 					return outcomes
 				}
 				

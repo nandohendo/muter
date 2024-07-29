@@ -12,7 +12,10 @@ struct Run: RunCommand {
 	
 	@Option(help: "Only include selected unit test")
 	var unitTestFile: [String] = []
-
+	
+	@Option(help: "Limit of mutation to be tested")
+	var mutationLimit: Int = 25
+	
     @Option(
         parsing: .upToNextOption,
         help: "The list of mutant operators to be used: \(MutationOperator.Id.description)",
@@ -44,7 +47,8 @@ struct Run: RunCommand {
             mutationOperatorsList: mutationOperatorsList,
             skipCoverage: options.skipCoverage,
             skipUpdateCheck: options.skipUpdateCheck,
-            configurationURL: options.configurationURL
+			configurationURL: options.configurationURL,
+			mutationLimit: mutationLimit
         )
 
         try await run(with: options)

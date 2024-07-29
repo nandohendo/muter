@@ -20,6 +20,9 @@ struct RunApplyMutation: RunCommand {
 	@Option(help: "Only include selected unit test")
 	var unitTestFile: [String] = []
 	
+	@Option(help: "Limit of mutation to be tested")
+	var mutationLimit: Int = 25
+	
 	@OptionGroup var options: RunArguments
 	@OptionGroup var reportOptions: ReportArguments
 	
@@ -38,6 +41,7 @@ struct RunApplyMutation: RunCommand {
 			skipUpdateCheck: options.skipUpdateCheck,
 			configurationURL: options.configurationURL,
 			testPlanURL: testPlanURL,
+			mutationLimit: mutationLimit,
 			stepCommand: .runApplyMutation
 		)
 		
