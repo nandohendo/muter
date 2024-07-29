@@ -8,14 +8,10 @@ struct RunApplySchemata: RunCommand {
 	)
 	
 	@Option(help: "Only mutate a given list of source code files.")
-	var filesToMutate: [String] = [
-		"Sources/ViewModels/RiskChallengeViewModel.swift"
-	]
+	var filesToMutate: [String] = []
 	
 	@Option(help: "Only include selected unit test")
-	var unitTestFile: [String] = [
-		"CardBindingTests/RiskChallengeViewModelSpec.swift"
-	]
+	var unitTestFile: [String] = []
 	
 	@OptionGroup var options: RunArguments
 

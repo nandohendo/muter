@@ -116,7 +116,6 @@ private extension [MutationStep] {
 		LoadConfiguration(),
 		LoadMuterTestPlan(),
 		BuildForTesting(),
-		ProjectMappings(),
 	]
 	
 	static let applyMutation: [MutationStep] = [

@@ -41,7 +41,7 @@ struct LoadConfiguration: MutationStep {
 			print("Muter Duration: Load Configuration \(endDuration)")
 			
             return [
-                .projectDirectoryUrlDiscovered(URL(string: "/Users/jonathanm/Documents/DANA-Project/card_binding_flow_ios")!),
+				.projectDirectoryUrlDiscovered(URL(fileURLWithPath: fileManager.currentDirectoryPath)),
                 .configurationParsed(configuration),
             ]
         } catch {
