@@ -15,6 +15,9 @@ struct RunApplySchemata: RunCommand {
 	
 	@OptionGroup var options: RunArguments
 	
+	@Option(help: "Add test plan URL")
+	var testPlanURL: URL?
+	
 	init() {}
 
 	func run() async throws {
@@ -24,6 +27,7 @@ struct RunApplySchemata: RunCommand {
 			skipCoverage: options.skipCoverage,
 			skipUpdateCheck: options.skipUpdateCheck,
 			configurationURL: options.configurationURL,
+			testPlanURL: testPlanURL,
 			stepCommand: .runApplySchemata
 		)
 		
