@@ -14,7 +14,7 @@ struct RunApplySchemata: RunCommand {
 	var unitTestFile: [String] = []
 	
 	@OptionGroup var options: RunArguments
-
+	
 	init() {}
 
 	func run() async throws {

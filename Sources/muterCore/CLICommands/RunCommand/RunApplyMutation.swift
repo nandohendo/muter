@@ -21,13 +21,16 @@ struct RunApplyMutation: RunCommand {
 	var unitTestFile: [String] = []
 	
 	@OptionGroup var options: RunArguments
-
+	@OptionGroup var reportOptions: ReportArguments
+	
 	init() {}
 
 	func run() async throws {
 		let options = Run.Options(
 			filesToMutate: filesToMutate,
 			unitTestFile: unitTestFile,
+			reportFormat: reportOptions.reportFormat,
+			reportURL: reportOptions.reportURL,
 			skipCoverage: options.skipCoverage,
 			skipUpdateCheck: options.skipUpdateCheck,
 			configurationURL: options.configurationURL,
