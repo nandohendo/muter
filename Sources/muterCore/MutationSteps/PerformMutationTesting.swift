@@ -103,6 +103,11 @@ private extension PerformMutationTesting {
         for mutationMap in state.mutationMapping {
             for mutationSchema in mutationMap.mutationSchemata {
 
+				// Limit mutation count to avoid blocking gatecheck queue for too long
+				if outcomes.count == 25 {
+					return outcomes
+				}
+				
                 try? ioDelegate.switchOn(
                     schemata: mutationSchema,
                     for: state.projectXCTestRun,
