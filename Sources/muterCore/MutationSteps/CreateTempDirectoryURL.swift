@@ -4,10 +4,14 @@ struct CreateMutatedProjectDirectoryURL: MutationStep {
     func run(
         with state: AnyMutationTestState
     ) async throws -> [MutationTestState.Change] {
+		let startDuration = Date()
         let destinationPath = destinationPath(
             with: state.projectDirectoryURL
         )
-
+		
+		let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+		print("Muter Duration: Create Mutated Project Directory URL \(endDuration)")
+		
         return [
             .tempDirectoryUrlCreated(URL(fileURLWithPath: destinationPath))
         ]

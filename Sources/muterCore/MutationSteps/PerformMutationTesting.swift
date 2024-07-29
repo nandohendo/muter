@@ -16,6 +16,7 @@ struct PerformMutationTesting: MutationStep {
     func run(
         with state: AnyMutationTestState
     ) async throws -> [MutationTestState.Change] {
+		let startDuration = Date()
         fileManager.changeCurrentDirectoryPath(state.mutatedProjectDirectoryURL.path)
 
         let (mutationOutcome, testDuration) = try await benchmarkMutationTesting {
@@ -33,7 +34,10 @@ struct PerformMutationTesting: MutationStep {
             name: .mutationTestingFinished,
             object: mutationTestOutcome
         )
-
+		
+		let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+		print("Muter Duration: Perform Mutation Testing \(endDuration)")
+		
         return [.mutationTestOutcomeGenerated(mutationTestOutcome)]
     }
 

@@ -7,6 +7,7 @@ struct LoadMuterTestPlan: MutationStep {
     private var notificationCenter: NotificationCenter
 
     func run(with state: AnyMutationTestState) async throws -> [MutationTestState.Change] {
+		let startDuration = Date()
         guard let testPlanPath = state.runOptions.testPlanURL?.path else {
             throw MuterError.literal(reason: "Could not load the test plan")
         }
@@ -18,7 +19,10 @@ struct LoadMuterTestPlan: MutationStep {
         let testPlan = try JSONDecoder().decode(MuterTestPlan.self, from: testPlanData)
 
         notificationCenter.post(name: .muterMutationTestPlanLoaded, object: nil)
-
+		
+		let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+		print("Muter Duration: Load Muter Test Plan \(endDuration)")
+		
         return [
             .tempDirectoryUrlCreated(URL(fileURLWithPath: testPlan.mutatedProjectPath)),
             .projectCoverage(.init(percent: testPlan.projectCoverage)),

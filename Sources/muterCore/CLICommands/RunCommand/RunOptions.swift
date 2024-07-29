@@ -2,6 +2,14 @@ import Foundation
 
 typealias ReportOptions = (reporter: Reporter, path: String?)
 
+enum StepCommand {
+	case createMutationWorkspace
+	case discoverMutation
+	case runApplySchemata
+	case runApplyMutation
+	case all
+}
+
 extension Run {
     struct Options {
         let reportOptions: ReportOptions
@@ -13,6 +21,7 @@ extension Run {
         let configurationURL: URL?
         let testPlanURL: URL?
         let createTestPlan: Bool
+		let stepCommand: StepCommand
         var isUsingTestPlan: Bool {
             testPlanURL != nil
         }
@@ -27,14 +36,16 @@ extension Run {
             skipUpdateCheck: Bool,
             configurationURL: URL?,
             testPlanURL: URL? = nil,
-            createTestPlan: Bool = false
+            createTestPlan: Bool = false,
+			stepCommand: StepCommand = .all
         ) {
             self.skipCoverage = skipCoverage
             self.skipUpdateCheck = skipUpdateCheck
             self.createTestPlan = createTestPlan
             self.mutationOperatorsList = mutationOperatorsList
-            self.configurationURL = configurationURL
-            self.testPlanURL = testPlanURL
+            self.configurationURL = URL(string: "/Users/jonathanm/Documents/DANA-Project/card_binding_flow_ios")
+			self.testPlanURL = URL(string: "/Users/jonathanm/Documents/DANA-Project/card_binding_flow_ios/muter-mappings.json")
+			self.stepCommand = stepCommand
 
             self.filesToMutate = filesToMutate.reduce(into: []) { accum, next in
                 accum.append(

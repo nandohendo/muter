@@ -10,6 +10,7 @@ struct DiscoverSourceFiles: MutationStep {
     func run(
         with state: AnyMutationTestState
     ) async throws -> [MutationTestState.Change] {
+		let startDuration = Date()
         notificationCenter.post(
             name: .sourceFileDiscoveryStarted,
             object: nil
@@ -34,7 +35,10 @@ struct DiscoverSourceFiles: MutationStep {
             name: .sourceFileDiscoveryFinished,
             object: sourceFileCandidates
         )
-
+		
+		let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+		print("Muter Duration: Discover Source Files \(endDuration)")
+		
         if !sourceFileCandidates.isEmpty {
             return [.sourceFileCandidatesDiscovered(sourceFileCandidates)]
         } else {

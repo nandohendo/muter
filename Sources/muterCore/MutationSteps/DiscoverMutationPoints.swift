@@ -6,10 +6,11 @@ struct DiscoverMutationPoints: MutationStep {
     private var notificationCenter: NotificationCenter
     @Dependency(\.prepareCode)
     var prepareSourceCode: SourceCodePreparation
-
+	
     func run(
         with state: AnyMutationTestState
     ) async throws -> [MutationTestState.Change] {
+		let startDuration = Date()
         notificationCenter.post(
             name: .mutationsDiscoveryStarted,
             object: nil
@@ -32,7 +33,10 @@ struct DiscoverMutationPoints: MutationStep {
             name: .mutationsDiscoveryFinished,
             object: mappings
         )
-
+		
+		let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+		print("Muter Duration: Discover Mutation Points \(endDuration)")
+		
         return [
             .mutationMappingsDiscovered(mappings),
             .sourceCodeParsed(discovered.sourceCodeByFilePath),

@@ -7,6 +7,9 @@ struct CreateMuterTestPlan: MutationStep {
     private var writeFile: WriteFile
 
     func run(with state: AnyMutationTestState) async throws -> [MutationTestState.Change] {
+		
+		let startDuration = Date()
+		
         let testPlan = MuterTestPlan(
             mutatedProjectPath: state.mutatedProjectDirectoryURL.path,
             projectCoverage: state.projectCoverage.percent,
@@ -33,6 +36,9 @@ struct CreateMuterTestPlan: MutationStep {
             object: jsonUrl.path
         )
 
+		let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+		print("Muter Duration: Create Muter Test Plan \(endDuration)")
+		
         return []
     }
 }

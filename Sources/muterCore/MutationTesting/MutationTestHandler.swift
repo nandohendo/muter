@@ -68,6 +68,7 @@ private extension [MutationStep] {
         GenerateSwapFilePaths(),
         ApplySchemata(),
         BuildForTesting(),
+		DiscoverXCTestRun(),
         ProjectMappings(),
         PerformMutationTesting(),
     ]
@@ -77,6 +78,7 @@ private extension [MutationStep] {
         LoadConfiguration(),
         LoadMuterTestPlan(),
         BuildForTesting(),
+		DiscoverXCTestRun(),
         ProjectMappings(),
         PerformMutationTesting(),
     ]
@@ -93,10 +95,55 @@ private extension [MutationStep] {
         ApplySchemata(),
         CreateMuterTestPlan(),
     ]
+	
+	static let createMutationWorkspace: [MutationStep] = [
+		LoadConfiguration(),
+		CreateMutatedProjectDirectoryURL(),
+		PreviousRunCleanUp(),
+		CopyProjectToTempDirectory()
+	]
+	
+	static let discoverMutation: [MutationStep] = [
+		LoadConfiguration(),
+		CreateMutatedProjectDirectoryURL(),
+		DiscoverSourceFiles(),
+		DiscoverMutationPoints(),
+		ApplySchemata(),
+		CreateMuterTestPlan()
+	]
+	
+	static let applySchemata: [MutationStep] = [
+		LoadConfiguration(),
+		LoadMuterTestPlan(),
+		BuildForTesting(),
+		ProjectMappings(),
+	]
+	
+	static let applyMutation: [MutationStep] = [
+		LoadConfiguration(),
+		LoadMuterTestPlan(),
+		DiscoverXCTestRun(),
+		ProjectMappings(),
+		PerformMutationTesting(),
+	]
 
     func filtering(with options: Run.Options) -> [MutationStep] {
         var copy: [any MutationStep] = self
-
+		
+		guard options.stepCommand == .all else {
+			if options.stepCommand == .createMutationWorkspace {
+				copy = [MutationStep].createMutationWorkspace
+			} else if options.stepCommand == .discoverMutation {
+				copy = [MutationStep].discoverMutation
+			} else if options.stepCommand == .runApplySchemata {
+				copy = [MutationStep].applySchemata
+			} else if options.stepCommand == .runApplyMutation {
+				copy = [MutationStep].applyMutation
+			}
+			
+			return copy
+		}
+		
         if options.isUsingTestPlan {
             copy = [MutationStep].testPlanSteps
         } else {

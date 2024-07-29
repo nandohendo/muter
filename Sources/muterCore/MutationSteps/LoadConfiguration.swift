@@ -7,6 +7,7 @@ struct LoadConfiguration: MutationStep {
     func run(
         with state: AnyMutationTestState
     ) async throws -> [MutationTestState.Change] {
+		let startDuration = Date()
         let configurationPath = configurationPath(state.runOptions)
         do {
             let hasJSON = hasJsonInProjectAtPath(configurationPath)
@@ -35,9 +36,12 @@ struct LoadConfiguration: MutationStep {
                     reason: "Please provide a valid `-destination` argument for your project"
                 )
             }
-
+			
+			let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+			print("Muter Duration: Load Configuration \(endDuration)")
+			
             return [
-                .projectDirectoryUrlDiscovered(URL(fileURLWithPath: fileManager.currentDirectoryPath)),
+                .projectDirectoryUrlDiscovered(URL(string: "/Users/jonathanm/Documents/DANA-Project/card_binding_flow_ios")!),
                 .configurationParsed(configuration),
             ]
         } catch {

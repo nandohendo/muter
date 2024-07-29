@@ -11,6 +11,7 @@ struct BuildForTesting: MutationStep {
     func run(
         with state: AnyMutationTestState
     ) async throws -> [MutationTestState.Change] {
+		let startDuration = Date()
         guard state.muterConfiguration.buildSystem == .xcodebuild else {
             return []
         }
@@ -18,6 +19,9 @@ struct BuildForTesting: MutationStep {
         let currentDirectoryPath = fileManager.currentDirectoryPath
 
         defer {
+			let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+			print("Muter Duration: Build For Testing \(endDuration)")
+			
             fileManager.changeCurrentDirectoryPath(currentDirectoryPath)
         }
 
@@ -28,10 +32,7 @@ struct BuildForTesting: MutationStep {
 			try runBuildForTestingCommand(state.muterConfiguration, unitTestFiles: state.unitTestFiles)
             let tempDebugURL = debugURLForTempDirectory(state.mutatedProjectDirectoryURL)
             try copyBuildArtifactsAtPath(buildDirectory, to: tempDebugURL.path)
-
-			let xcTestRun = try parseXCTestRunAt(tempDebugURL, unitTestFiles: state.unitTestFiles)
-
-            return [.projectXCTestRun(xcTestRun)]
+            return []
         } catch {
             throw MuterError.literal(reason: "\(error)")
         }
@@ -64,16 +65,6 @@ struct BuildForTesting: MutationStep {
     ) throws {
 		
 		var arguments = configuration.buildForTestingArguments
-		
-		if !unitTestFiles.isEmpty {
-			
-			let unitTestPath: [String] = unitTestFiles.map { unitTestFile in
-				return "-only-testing:\(unitTestFile)"
-			}
-			
-			arguments += unitTestPath
-		}
-		
 		print(arguments)
 		
         guard let result: String = process().runProcess(
@@ -167,7 +158,7 @@ struct BuildForTesting: MutationStep {
 			format: .xml,
 			options: 0
 		)
-
+		
         return XCTestRun(plist)
     }
 

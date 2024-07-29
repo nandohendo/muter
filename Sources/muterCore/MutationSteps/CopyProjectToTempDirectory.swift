@@ -10,6 +10,7 @@ class CopyProjectToTempDirectory: MutationStep {
         with state: AnyMutationTestState
     ) async throws -> [MutationTestState.Change] {
         do {
+			let startDuration = Date()
             notificationCenter.post(
                 name: .projectCopyStarted,
                 object: nil
@@ -24,7 +25,10 @@ class CopyProjectToTempDirectory: MutationStep {
                 name: .projectCopyFinished,
                 object: state.mutatedProjectDirectoryURL.path
             )
-
+			
+			let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+			print("Muter Duration: Copy Project To Temp Directory \(endDuration)")
+			
             return []
         } catch {
             throw MuterError.projectCopyFailed(

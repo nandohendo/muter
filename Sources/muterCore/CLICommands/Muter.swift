@@ -11,8 +11,12 @@ struct MuterCommand: AsyncParsableCommand {
             RunWithoutMutating.self,
             MutateWithoutRunning.self,
             Operator.self,
+			CreateMuterWorkspace.self,
+			DiscoverMutation.self,
+			RunApplySchemata.self,
+			RunApplyMutation.self,
         ],
-        defaultSubcommand: Run.self
+        defaultSubcommand: RunApplyMutation.self
     )
 }
 

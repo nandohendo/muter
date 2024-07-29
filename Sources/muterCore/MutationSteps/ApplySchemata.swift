@@ -9,6 +9,7 @@ struct ApplySchemata: MutationStep {
     func run(
         with state: AnyMutationTestState
     ) async throws -> [MutationTestState.Change] {
+		let startDuration = Date()
         for mutationMap in state.mutationMapping {
             guard let sourceCode = state.sourceCodeByFilePath[mutationMap.filePath] else {
                 // TODO: log?
@@ -28,7 +29,10 @@ struct ApplySchemata: MutationStep {
                 throw MuterError.literal(reason: error.localizedDescription)
             }
         }
-
+		
+		let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+		print("Muter Duration: Apply Schemata \(endDuration)")
+		
         return []
     }
 }

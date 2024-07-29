@@ -7,6 +7,7 @@ struct GenerateSwapFilePaths: MutationStep {
     func run(
         with state: AnyMutationTestState
     ) async throws -> [MutationTestState.Change] {
+		let startDuration = Date()
         let result = createSwapFileDirectory(in: state.mutatedProjectDirectoryURL.path)
 
         switch result {
@@ -17,7 +18,10 @@ struct GenerateSwapFilePaths: MutationStep {
                 forFilesAt: filePaths,
                 using: swapFileDirectoryPath
             )
-
+			
+			let endDuration = Double((Date().timeIntervalSince(startDuration) * 1000).rounded())
+			print("Muter Duration: Generate Swap File Paths \(endDuration)")
+			
             return [.swapFilePathGenerated(swapFilePathsByOriginalPath)]
 
         case let .failure(error):
