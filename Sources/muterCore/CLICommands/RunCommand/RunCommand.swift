@@ -11,6 +11,13 @@ extension RunCommand {
         do {
             try await MutationTestHandler(options: options).run()
         } catch {
+			
+			if let error = error as? MuterError,
+			   error == MuterError.noMutationPointsDiscovered {
+				print("No mutation point discovered")
+				Foundation.exit(0)
+			}
+			
             print(
                 """
                 ⚠️ ⚠️ ⚠️ ⚠️ ⚠️  Muter has encountered an error  ⚠️ ⚠️ ⚠️ ⚠️ ⚠️
