@@ -22,6 +22,7 @@ extension Run {
         let testPlanURL: URL?
         let createTestPlan: Bool
 		let stepCommand: StepCommand
+		let randomizeTest: Bool
 		let mutationLimit: Int
         var isUsingTestPlan: Bool {
             testPlanURL != nil
@@ -39,7 +40,8 @@ extension Run {
             testPlanURL: URL? = nil,
             createTestPlan: Bool = false,
 			mutationLimit: Int = 25,
-			stepCommand: StepCommand = .all
+			stepCommand: StepCommand = .all,
+			randomizeTest: Bool = false
         ) {
             self.skipCoverage = skipCoverage
             self.skipUpdateCheck = skipUpdateCheck
@@ -49,6 +51,7 @@ extension Run {
             self.testPlanURL = testPlanURL
 			self.stepCommand = stepCommand
 			self.mutationLimit = mutationLimit
+			self.randomizeTest = randomizeTest
 			
             self.filesToMutate = filesToMutate.reduce(into: []) { accum, next in
                 accum.append(

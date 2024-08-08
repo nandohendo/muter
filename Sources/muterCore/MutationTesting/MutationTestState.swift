@@ -43,6 +43,7 @@ final class MutationTestState: AnyMutationTestState {
     var swapFilePathsByOriginalPath: [FilePath: FilePath] = [:]
     var mutationTestOutcome: MutationTestOutcome = .init()
 	var mutationLimit: Int = 25
+	var randomizeTest: Bool = false
 
     init() {}
 
@@ -52,6 +53,7 @@ final class MutationTestState: AnyMutationTestState {
         filesToMutate = options.filesToMutate
 		unitTestFiles = options.unitTestFile
 		mutationLimit = options.mutationLimit
+		randomizeTest = options.randomizeTest
     }
 }
 

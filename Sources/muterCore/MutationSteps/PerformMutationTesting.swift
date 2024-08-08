@@ -99,9 +99,15 @@ private extension PerformMutationTesting {
         var outcomes: [MutationTestOutcome.Mutation] = []
         outcomes.reserveCapacity(state.mutationPoints.count)
         var buildErrors = 0
-
-        for mutationMap in state.mutationMapping {
-            for mutationSchema in mutationMap.mutationSchemata {
+		let isRandomize = state.runOptions.randomizeTest
+		
+		let mutationMapping = isRandomize ? state.mutationMapping.shuffled() : state.mutationMapping
+		
+        for mutationMap in mutationMapping {
+			
+			let mutationSchemata = isRandomize ? mutationMap.mutationSchemata.shuffled() : mutationMap.mutationSchemata
+			
+			for mutationSchema in mutationSchemata {
 
 				// Limit mutation count to avoid blocking gatecheck queue for too long
 				if outcomes.count == state.mutationLimit {
