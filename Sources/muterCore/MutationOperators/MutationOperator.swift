@@ -8,6 +8,15 @@ extension [MutationOperator.Id] {
     static var allOperators = MutationOperator.Id.allCases
 }
 
+enum MutationLimitType: String, Codable, CaseIterable {
+	case percent = "Percent"
+	case point = "Point"
+	
+	static var description: String {
+		allCases.map(\.rawValue).joined(separator: ", ")
+	}
+}
+
 enum MutationOperator {
     enum Id: String, Codable, CaseIterable {
         case ror = "RelationalOperatorReplacement"

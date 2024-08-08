@@ -16,6 +16,18 @@ struct Run: RunCommand {
 	@Option(help: "Limit of mutation to be tested")
 	var mutationLimit: Int = 25
 	
+	@Option(
+		help: "Limitation type",
+		transform: {
+			guard let `limitType` = MutationLimitType(rawValue: $0) else {
+				throw MuterError.literal(reason: MutationLimitType.description)
+			}
+			
+			return `limitType`
+		}
+	)
+	var mutationLimitType: MutationLimitType = .point
+	
 	@Option(help: "Option to enable mutation to run random or not")
 	var randomizeTest: Bool = true
 	
@@ -52,7 +64,8 @@ struct Run: RunCommand {
             skipUpdateCheck: options.skipUpdateCheck,
 			configurationURL: options.configurationURL,
 			mutationLimit: mutationLimit,
-			randomizeTest: randomizeTest
+			randomizeTest: randomizeTest,
+			mutationLimitType: mutationLimitType
         )
 
         try await run(with: options)

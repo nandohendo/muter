@@ -20,6 +20,8 @@ protocol AnyMutationTestState: AnyObject {
     var swapFilePathsByOriginalPath: [FilePath: FilePath] { get }
     var mutationTestOutcome: MutationTestOutcome { get }
 	var mutationLimit: Int { get }
+	var randomizeTest: Bool { get }
+	var mutationLimitType: MutationLimitType { get }
 
     func apply(_ stateChanges: [MutationTestState.Change])
 }
@@ -44,6 +46,7 @@ final class MutationTestState: AnyMutationTestState {
     var mutationTestOutcome: MutationTestOutcome = .init()
 	var mutationLimit: Int = 25
 	var randomizeTest: Bool = false
+	var mutationLimitType: MutationLimitType = .point
 
     init() {}
 
@@ -54,6 +57,7 @@ final class MutationTestState: AnyMutationTestState {
 		unitTestFiles = options.unitTestFile
 		mutationLimit = options.mutationLimit
 		randomizeTest = options.randomizeTest
+		mutationLimitType = options.mutationLimitType
     }
 }
 

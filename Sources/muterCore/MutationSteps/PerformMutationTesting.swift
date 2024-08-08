@@ -100,17 +100,20 @@ private extension PerformMutationTesting {
         outcomes.reserveCapacity(state.mutationPoints.count)
         var buildErrors = 0
 		let isRandomize = state.runOptions.randomizeTest
+		var mutationLimit = state.mutationLimit
+		
+		if state.runOptions.mutationLimitType == .percent {
+			mutationLimit = state.mutationMapping.reduce(0, { $1.mutationSchemata.count }) * mutationLimit / 100
+		}
 		
 		let mutationMapping = isRandomize ? state.mutationMapping.shuffled() : state.mutationMapping
-		
         for mutationMap in mutationMapping {
 			
 			let mutationSchemata = isRandomize ? mutationMap.mutationSchemata.shuffled() : mutationMap.mutationSchemata
-			
 			for mutationSchema in mutationSchemata {
 
 				// Limit mutation count to avoid blocking gatecheck queue for too long
-				if outcomes.count == state.mutationLimit {
+				if outcomes.count == mutationLimit {
 					return outcomes
 				}
 				
