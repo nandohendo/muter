@@ -29,7 +29,7 @@ struct Run: RunCommand {
 	var mutationLimitType: MutationLimitType = .point
 	
 	@Option(help: "Option to enable mutation to run random or not")
-	var randomizeTest: Bool = true
+	var randomizeTest: Bool = false
 	
     @Option(
         parsing: .upToNextOption,
