@@ -23,11 +23,14 @@ struct PerformMutationTesting: MutationStep {
             try await performMutationTesting(using: state)
         }
 
+		let totalFoundedMutation = state.mutationMapping.reduce(0, { $1.mutationSchemata.count + $0 })
+		
         let mutationTestOutcome = MutationTestOutcome(
             mutations: mutationOutcome,
             coverage: state.projectCoverage,
             testDuration: testDuration,
-            newVersion: state.newVersion
+            newVersion: state.newVersion,
+			totalFoundedMutation: totalFoundedMutation
         )
 
         notificationCenter.post(

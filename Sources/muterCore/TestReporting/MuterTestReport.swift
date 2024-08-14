@@ -10,6 +10,7 @@ struct MuterTestReport {
     let projectCodeCoverage: Int?
     let fileReports: [FileReport]
     let timeElapsed: String
+	let totalFoundedMutation: Int
 
     init(from outcome: MutationTestOutcome = .init()) {
         globalMutationScore = mutationScore(from: outcome.mutations.map { $0.testSuiteOutcome })
@@ -19,6 +20,7 @@ struct MuterTestReport {
         projectCodeCoverage = outcome.coverage == .null ? nil : outcome.coverage.percent
         fileReports = MuterTestReport.fileReports(from: outcome)
         timeElapsed = outcome.testDuration.formatted()
+		totalFoundedMutation = outcome.totalFoundedMutation
     }
 }
 
@@ -179,5 +181,6 @@ extension MuterTestReport: Codable {
         case projectCodeCoverage
         case fileReports
         case timeElapsed
+		case totalFoundedMutation
     }
 }

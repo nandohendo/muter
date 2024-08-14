@@ -5,17 +5,20 @@ struct MutationTestOutcome {
     let coverage: Coverage
     let testDuration: TimeInterval
     let newVersion: String
+	let totalFoundedMutation: Int
 
     init(
         mutations: [Mutation] = [],
         coverage: Coverage = .null,
         testDuration: TimeInterval = 0,
-        newVersion: String = ""
+        newVersion: String = "",
+		totalFoundedMutation: Int = 0
     ) {
         self.mutations = mutations
         self.coverage = coverage
         self.testDuration = testDuration
         self.newVersion = newVersion
+		self.totalFoundedMutation = totalFoundedMutation
     }
 }
 

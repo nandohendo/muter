@@ -98,7 +98,16 @@ extension Node where Context: HTML.BodyContext {
                     .p(.class("small"), "Operators Applied"),
                     .h1("\(testReport.totalAppliedMutationOperators)")
                 )
-            )
+            ),
+			.div(
+				.class("header-item"),
+				.div(
+					.class("box"),
+					.style("background-color: #3498db"),
+					.p(.class("small"), "Total Mutation Founded"),
+					.h1("\(testReport.totalFoundedMutation)")
+				)
+			)
         )
     }
 
