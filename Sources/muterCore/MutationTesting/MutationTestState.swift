@@ -5,7 +5,7 @@ protocol AnyMutationTestState: AnyObject {
     var runOptions: Run.Options { get }
     var newVersion: String { get }
     var mutationTestingStartTime: Date { get }
-    var muterConfiguration: MuterConfiguration { get }
+    var muterConfiguration: MuterConfiguration { get set }
     var mutationOperatorList: MutationOperatorList { get }
     var projectDirectoryURL: URL { get }
     var mutatedProjectDirectoryURL: URL { get }
@@ -22,6 +22,7 @@ protocol AnyMutationTestState: AnyObject {
 	var mutationLimit: Int { get }
 	var randomizeTest: Bool { get }
 	var mutationLimitType: MutationLimitType { get }
+	var isCleanBuild: Bool { get }
 
     func apply(_ stateChanges: [MutationTestState.Change])
 }
@@ -47,6 +48,7 @@ final class MutationTestState: AnyMutationTestState {
 	var mutationLimit: Int = 25
 	var randomizeTest: Bool = false
 	var mutationLimitType: MutationLimitType = .point
+	var isCleanBuild: Bool = false
 
     init() {}
 
@@ -58,7 +60,7 @@ final class MutationTestState: AnyMutationTestState {
 		mutationLimit = options.mutationLimit
 		randomizeTest = options.randomizeTest
 		mutationLimitType = options.mutationLimitType
-		muterConfiguration = MuterConfiguration(isCleanBuild: options.isCleanBuild)
+		isCleanBuild = options.isCleanBuild
     }
 }
 

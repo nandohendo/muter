@@ -26,7 +26,9 @@ struct BuildForTesting: MutationStep {
         }
 
         fileManager.changeCurrentDirectoryPath(state.mutatedProjectDirectoryURL.path)
-
+		
+		state.muterConfiguration.isCleanBuild = state.isCleanBuild
+		
         do {
             let buildDirectory = try buildDirectory(state.muterConfiguration)
 			try runBuildForTestingCommand(state.muterConfiguration, unitTestFiles: state.unitTestFiles)

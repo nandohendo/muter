@@ -18,7 +18,7 @@ struct MuterConfiguration: Equatable, Codable {
         return BuildSystem(rawValue: buildSystem)
     }
 
-	private let isCleanBuild: Bool
+	var isCleanBuild: Bool
 	
     enum CodingKeys: String, CodingKey {
         case testCommandArguments = "arguments"
