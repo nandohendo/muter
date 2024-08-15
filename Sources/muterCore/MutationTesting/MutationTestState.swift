@@ -58,6 +58,7 @@ final class MutationTestState: AnyMutationTestState {
 		mutationLimit = options.mutationLimit
 		randomizeTest = options.randomizeTest
 		mutationLimitType = options.mutationLimitType
+		muterConfiguration = MuterConfiguration(isCleanBuild: options.isCleanBuild)
     }
 }
 

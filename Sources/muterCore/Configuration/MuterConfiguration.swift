@@ -18,12 +18,15 @@ struct MuterConfiguration: Equatable, Codable {
         return BuildSystem(rawValue: buildSystem)
     }
 
+	private let isCleanBuild: Bool
+	
     enum CodingKeys: String, CodingKey {
         case testCommandArguments = "arguments"
         case testCommandExecutable = "executable"
         case excludeFileList = "exclude"
         case excludeCallList = "excludeCalls"
         case coverageThreshold
+		case isCleanBuild
     }
 
     init(
@@ -31,13 +34,15 @@ struct MuterConfiguration: Equatable, Codable {
         arguments: [String] = [],
         excludeList: [String] = [],
         excludeCallList callList: [String] = [],
-        coverageThreshold threshold: Double = 0
+        coverageThreshold threshold: Double = 0,
+		isCleanBuild cleanBuild: Bool = false
     ) {
         testCommandExecutable = executable
         testCommandArguments = arguments
         excludeFileList = excludeList
         excludeCallList = callList
         coverageThreshold = threshold
+		isCleanBuild = cleanBuild
     }
 
     init(from decoder: Decoder) throws {
@@ -49,6 +54,7 @@ struct MuterConfiguration: Equatable, Codable {
         excludeFileList = container.decode([String].self, default: [], forKey: .excludeFileList)
         excludeCallList = container.decode([String].self, default: [], forKey: .excludeCallList)
         coverageThreshold = container.decode(Double.self, default: 0, forKey: .coverageThreshold)
+		isCleanBuild = container.decode(Bool.self, default: false, forKey: .isCleanBuild)
     }
 
     init(from data: Data) throws {
@@ -94,7 +100,11 @@ extension MuterConfiguration {
 
         switch buildSystem {
         case .xcodebuild:
-            return arguments.dropLast() + ["build-for-testing"]
+			if isCleanBuild {
+				return arguments.dropLast() + ["clean", "build-for-testing"]
+			} else {
+				return arguments.dropLast() + ["build-for-testing"]
+			}
         case .swift,
              .unknown:
             return arguments

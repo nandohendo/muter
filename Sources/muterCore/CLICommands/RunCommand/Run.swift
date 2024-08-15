@@ -31,6 +31,9 @@ struct Run: RunCommand {
 	@Option(help: "Option to enable mutation to run random or not")
 	var randomizeTest: Bool = false
 	
+	@Option(help: "Clean build project")
+	var isCleanBuild: Bool = false
+	
     @Option(
         parsing: .upToNextOption,
         help: "The list of mutant operators to be used: \(MutationOperator.Id.description)",
@@ -65,7 +68,8 @@ struct Run: RunCommand {
 			configurationURL: options.configurationURL,
 			mutationLimit: mutationLimit,
 			randomizeTest: randomizeTest,
-			mutationLimitType: mutationLimitType
+			mutationLimitType: mutationLimitType,
+			isCleanBuild: isCleanBuild
         )
 
         try await run(with: options)
