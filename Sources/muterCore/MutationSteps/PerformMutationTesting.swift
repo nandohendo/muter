@@ -68,7 +68,9 @@ private extension PerformMutationTesting {
         let (testSuiteOutcome, testLog) = ioDelegate.runTestSuite(
             withSchemata: .null,
             using: state.muterConfiguration,
-            savingResultsIntoFileNamed: "baseline run"
+            savingResultsIntoFileNamed: "baseline run",
+			useSourceDerivedData: state.runOptions.useSourceDerivedData,
+			sourceDerivedDataPath: state.projectDerivedData
         )
 
         let timeAfterRunningTestSuite = Date()
@@ -132,7 +134,9 @@ private extension PerformMutationTesting {
                     savingResultsIntoFileNamed: logFileName(
                         for: mutationMap.fileName,
                         schemata: mutationSchema
-                    )
+                    ),
+					useSourceDerivedData: state.runOptions.useSourceDerivedData,
+					sourceDerivedDataPath: state.projectDerivedData
                 )
 
                 let mutationPoint = MutationPoint(

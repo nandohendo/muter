@@ -30,19 +30,41 @@ struct BuildForTesting: MutationStep {
 		state.muterConfiguration.isCleanBuild = state.isCleanBuild
 		
         do {
-            let buildDirectory = try buildDirectory(state.muterConfiguration)
-			try runBuildForTestingCommand(state.muterConfiguration, unitTestFiles: state.unitTestFiles)
+			let buildDirectory = try buildDirectory(state.muterConfiguration, projectDirectory: state.projectDirectoryURL.absoluteString, useSourceDerivedData: state.runOptions.useSourceDerivedData)
+			let derivedDataPath = buildDirectory.replacingOccurrences(of: "/Build/Products", with: "")
+			try runBuildForTestingCommand(state.muterConfiguration, derivedDataPath: derivedDataPath, useSourceDerivedData: state.runOptions.useSourceDerivedData, unitTestFiles: state.unitTestFiles)
             let tempDebugURL = debugURLForTempDirectory(state.mutatedProjectDirectoryURL)
             try copyBuildArtifactsAtPath(buildDirectory, to: tempDebugURL.path)
-            return []
+			
+			if state.runOptions.useSourceDerivedData {
+				return [.projectDerivedData(derivedDataPath)]
+			} else {
+				return []
+			}
         } catch {
             throw MuterError.literal(reason: "\(error)")
         }
     }
 
-    private func buildDirectory(_ configuration: MuterConfiguration) throws -> String {
+	private func buildDirectory(_ configuration: MuterConfiguration, projectDirectory: String, useSourceDerivedData: Bool) throws -> String {
+		
+		var arguments: [String] = ["-showBuildSettings"]
+		
+		if useSourceDerivedData {
+			arguments = configuration.buildForTestingArguments
+			
+			if let projectIndex = arguments.firstIndex(where: { $0 == "-project" }) {
+				let projectName = arguments[projectIndex + 1]
+				let previousProjectName = "\(projectDirectory)/\(projectName)"
+				arguments[projectIndex + 1] = previousProjectName
+				arguments.append("-showBuildSettings")
+			}
+		}
+		
+//		let arguments = ["-project", "\(projectDirectory)/CardBinding.xcodeproj", "-scheme", "CardBinding", "-destination", "platform=iOS Simulator,name=iPhone 15", "-showBuildSettings"]
+		
         guard let buildSettings = process()
-            .runProcess(url: configuration.testCommandExecutable, arguments: ["-showBuildSettings"])
+            .runProcess(url: configuration.testCommandExecutable, arguments: arguments)
             .flatMap(\.nilIfEmpty)
         else {
             throw MuterError.literal(reason: "Could not find `BUILD_DIR`")
@@ -63,10 +85,18 @@ struct BuildForTesting: MutationStep {
 
     private func runBuildForTestingCommand(
         _ configuration: MuterConfiguration,
+		derivedDataPath: String,
+		useSourceDerivedData: Bool,
 		unitTestFiles: [String] = []
     ) throws {
 		
 		var arguments = configuration.buildForTestingArguments
+		
+		if useSourceDerivedData {
+			arguments.append("-derivedDataPath")
+			arguments.append(derivedDataPath)
+		}
+		
 		print(arguments)
 		
         guard let result: String = process().runProcess(

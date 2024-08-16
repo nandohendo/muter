@@ -26,6 +26,7 @@ extension Run {
 		let mutationLimit: Int
 		let mutationLimitType: MutationLimitType
 		let isCleanBuild: Bool
+		let useSourceDerivedData: Bool
         var isUsingTestPlan: Bool {
             testPlanURL != nil
         }
@@ -45,7 +46,8 @@ extension Run {
 			stepCommand: StepCommand = .all,
 			randomizeTest: Bool = false,
 			mutationLimitType: MutationLimitType = .point,
-			isCleanBuild: Bool = false
+			isCleanBuild: Bool = false,
+			useSourceDerivedData: Bool = false
         ) {
             self.skipCoverage = skipCoverage
             self.skipUpdateCheck = skipUpdateCheck
@@ -58,6 +60,7 @@ extension Run {
 			self.randomizeTest = randomizeTest
 			self.mutationLimitType = mutationLimitType
 			self.isCleanBuild = isCleanBuild
+			self.useSourceDerivedData = useSourceDerivedData
 			
             self.filesToMutate = filesToMutate.reduce(into: []) { accum, next in
                 accum.append(

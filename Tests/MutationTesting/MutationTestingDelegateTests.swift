@@ -42,7 +42,9 @@ final class MutationTestingDelegateTests: MuterTestCase {
         let testProcess = try sut.testProcess(
             with: configuration,
             schemata: schemata,
-            and: FileHandle(fileDescriptor: 0)
+            and: FileHandle(fileDescriptor: 0),
+			useSourceDerivedData: false,
+			sourceDerivedDataPath: ""
         )
 
         XCTAssertEqual(testProcess.arguments, [
@@ -72,7 +74,9 @@ final class MutationTestingDelegateTests: MuterTestCase {
         let testProcess = try sut.testProcess(
             with: configuration,
             schemata: schemata,
-            and: FileHandle(fileDescriptor: 0)
+            and: FileHandle(fileDescriptor: 0),
+			useSourceDerivedData: false,
+			sourceDerivedDataPath: ""
         )
 
         XCTAssertEqual(testProcess.environment?[schemata.id], "YES")

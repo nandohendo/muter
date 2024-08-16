@@ -3,6 +3,7 @@ import Foundation
 import SwiftSyntax
 
 class MutationTestingDelegateSpy: Spy, MutationTestingIODelegate {
+	
     private(set) var methodCalls: [String] = []
     private(set) var backedUpFilePaths: [String] = []
     private(set) var mutatedFileContents: [String] = []
@@ -38,7 +39,9 @@ class MutationTestingDelegateSpy: Spy, MutationTestingIODelegate {
     func runTestSuite(
         withSchemata schemata: MutationSchema,
         using configuration: MuterConfiguration,
-        savingResultsIntoFileNamed fileName: String
+        savingResultsIntoFileNamed fileName: String,
+		useSourceDerivedData: Bool,
+		sourceDerivedDataPath: String
     ) -> (
         outcome: TestSuiteOutcome,
         testLog: String
@@ -47,7 +50,7 @@ class MutationTestingDelegateSpy: Spy, MutationTestingIODelegate {
         testLogs.append(fileName)
         return (testSuiteOutcomes.remove(at: 0), "testLog")
     }
-
+	
     func switchOn(schemata: MutationSchema, for testRun: XCTestRun, at path: URL) throws {
         methodCalls.append(#function)
         schematas.append(schemata)

@@ -23,6 +23,7 @@ protocol AnyMutationTestState: AnyObject {
 	var randomizeTest: Bool { get }
 	var mutationLimitType: MutationLimitType { get }
 	var isCleanBuild: Bool { get }
+	var projectDerivedData: String { get }
 
     func apply(_ stateChanges: [MutationTestState.Change])
 }
@@ -49,6 +50,8 @@ final class MutationTestState: AnyMutationTestState {
 	var randomizeTest: Bool = false
 	var mutationLimitType: MutationLimitType = .point
 	var isCleanBuild: Bool = false
+	var useSourceDerivedData: Bool = false
+	var projectDerivedData: String = ""
 
     init() {}
 
@@ -61,6 +64,7 @@ final class MutationTestState: AnyMutationTestState {
 		randomizeTest = options.randomizeTest
 		mutationLimitType = options.mutationLimitType
 		isCleanBuild = options.isCleanBuild
+		useSourceDerivedData = options.useSourceDerivedData
     }
 }
 
@@ -78,6 +82,7 @@ extension MutationTestState {
         case sourceCodeParsed([FilePath: SourceFileSyntax])
         case swapFilePathGenerated([FilePath: FilePath])
         case mutationTestOutcomeGenerated(MutationTestOutcome)
+		case projectDerivedData(String)
     }
 }
 
@@ -109,6 +114,8 @@ extension MutationTestState {
                 self.swapFilePathsByOriginalPath = swapFilePathsByOriginalPath
             case let .mutationTestOutcomeGenerated(mutationTestOutcome):
                 self.mutationTestOutcome = mutationTestOutcome
+			case let .projectDerivedData(derivedData):
+				self.projectDerivedData = derivedData
             }
         }
     }

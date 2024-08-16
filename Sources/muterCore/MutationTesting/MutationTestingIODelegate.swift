@@ -4,7 +4,9 @@ protocol MutationTestingIODelegate {
     func runTestSuite(
         withSchemata schemata: MutationSchema,
         using configuration: MuterConfiguration,
-        savingResultsIntoFileNamed fileName: String
+        savingResultsIntoFileNamed fileName: String,
+		useSourceDerivedData: Bool,
+		sourceDerivedDataPath: String
     ) -> (
         outcome: TestSuiteOutcome,
         testLog: String
@@ -28,7 +30,9 @@ struct MutationTestingDelegate: MutationTestingIODelegate {
     func runTestSuite(
         withSchemata schemata: MutationSchema,
         using configuration: MuterConfiguration,
-        savingResultsIntoFileNamed fileName: String
+        savingResultsIntoFileNamed fileName: String,
+		useSourceDerivedData: Bool,
+		sourceDerivedDataPath: String
     ) -> (
         outcome: TestSuiteOutcome,
         testLog: String
@@ -40,7 +44,9 @@ struct MutationTestingDelegate: MutationTestingIODelegate {
             let process = try testProcess(
                 with: configuration,
                 schemata: schemata,
-                and: testProcessFileHandle
+                and: testProcessFileHandle,
+				useSourceDerivedData: useSourceDerivedData,
+				sourceDerivedDataPath: sourceDerivedDataPath
             )
 
             try process.run()
@@ -85,9 +91,11 @@ struct MutationTestingDelegate: MutationTestingIODelegate {
     func testProcess(
         with configuration: MuterConfiguration,
         schemata: MutationSchema,
-        and fileHandle: FileHandle
+        and fileHandle: FileHandle,
+		useSourceDerivedData: Bool,
+		sourceDerivedDataPath: String
     ) throws -> Process {
-        let testCommandArguments = schemata == .null
+        var testCommandArguments = schemata == .null
             ? configuration.testCommandArguments
             : configuration.testWithoutBuildArguments(with: muterTestRunFileName)
 
@@ -96,7 +104,12 @@ struct MutationTestingDelegate: MutationTestingIODelegate {
         if schemata != .null {
             process.environment?[schemata.id] = "YES"
         }
-
+		
+		if useSourceDerivedData {
+			testCommandArguments.append("-derivedDataPath")
+			testCommandArguments.append(sourceDerivedDataPath)
+		}
+		
         process.arguments = testCommandArguments
         process.executableURL = URL(fileURLWithPath: configuration.testCommandExecutable)
         process.standardOutput = fileHandle
