@@ -30,7 +30,7 @@ struct BuildForTesting: MutationStep {
 		state.muterConfiguration.isCleanBuild = state.isCleanBuild
 		
         do {
-			let buildDirectory = try buildDirectory(state.muterConfiguration, projectDirectory: state.projectDirectoryURL.absoluteString, useSourceDerivedData: state.runOptions.useSourceDerivedData)
+			let buildDirectory = try buildDirectory(state.muterConfiguration, projectDirectory: state.projectDirectoryURL.path, useSourceDerivedData: state.runOptions.useSourceDerivedData)
 			let derivedDataPath = buildDirectory.replacingOccurrences(of: "/Build/Products", with: "")
 			try runBuildForTestingCommand(state.muterConfiguration, derivedDataPath: derivedDataPath, useSourceDerivedData: state.runOptions.useSourceDerivedData, unitTestFiles: state.unitTestFiles)
             let tempDebugURL = debugURLForTempDirectory(state.mutatedProjectDirectoryURL)
