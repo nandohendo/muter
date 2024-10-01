@@ -32,7 +32,13 @@ struct Run: RunCommand {
 	var randomizeTest: Bool = false
 	
 	@Option(help: "Clean build project")
-	var isCleanBuild: Bool = false
+	var isCleanBuild: Bool = true
+	
+	@Option(help: "Use custom derived data path")
+	var useCustomDerivedData: Bool = true
+	
+	@Option(help: "Derived data path")
+	var customDerivedDataPath: String = "MutationDerivedData"
 	
     @Option(
         parsing: .upToNextOption,
@@ -69,7 +75,9 @@ struct Run: RunCommand {
 			mutationLimit: mutationLimit,
 			randomizeTest: randomizeTest,
 			mutationLimitType: mutationLimitType,
-			isCleanBuild: isCleanBuild
+			isCleanBuild: isCleanBuild,
+			useCustomDerivedData: useCustomDerivedData,
+			customDerivedDataPath: customDerivedDataPath
         )
 
         try await run(with: options)

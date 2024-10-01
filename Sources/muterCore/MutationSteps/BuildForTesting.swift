@@ -30,8 +30,9 @@ struct BuildForTesting: MutationStep {
 		state.muterConfiguration.isCleanBuild = state.isCleanBuild
 		
         do {
-            let buildDirectory = try buildDirectory(state.muterConfiguration)
-			try runBuildForTestingCommand(state.muterConfiguration, unitTestFiles: state.unitTestFiles)
+			let derivedDataPath = state.mutatedProjectDirectoryURL.path + "/\(state.runOptions.customDerivedDataPath)"
+			let buildDirectory = state.runOptions.useCustomDerivedData ? "\(derivedDataPath)/Build/Products" : try buildDirectory(state.muterConfiguration)
+			try runBuildForTestingCommand(state.muterConfiguration, unitTestFiles: state.unitTestFiles, derivedDataPath: state.runOptions.useCustomDerivedData ? derivedDataPath : nil)
             let tempDebugURL = debugURLForTempDirectory(state.mutatedProjectDirectoryURL)
             try copyBuildArtifactsAtPath(buildDirectory, to: tempDebugURL.path)
             return []
@@ -41,6 +42,7 @@ struct BuildForTesting: MutationStep {
     }
 
     private func buildDirectory(_ configuration: MuterConfiguration) throws -> String {
+		
         guard let buildSettings = process()
             .runProcess(url: configuration.testCommandExecutable, arguments: ["-showBuildSettings"])
             .flatMap(\.nilIfEmpty)
@@ -63,11 +65,17 @@ struct BuildForTesting: MutationStep {
 
     private func runBuildForTestingCommand(
         _ configuration: MuterConfiguration,
-		unitTestFiles: [String] = []
+		unitTestFiles: [String] = [],
+		derivedDataPath: String? = nil
     ) throws {
 		
 		var arguments = configuration.buildForTestingArguments
 		print(arguments)
+		
+		if let derivedDataPath = derivedDataPath {
+			arguments.append("-derivedDataPath")
+			arguments.append(derivedDataPath)
+		}
 		
         guard let result: String = process().runProcess(
             url: configuration.testCommandExecutable,

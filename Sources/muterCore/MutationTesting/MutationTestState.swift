@@ -49,6 +49,8 @@ final class MutationTestState: AnyMutationTestState {
 	var randomizeTest: Bool = false
 	var mutationLimitType: MutationLimitType = .point
 	var isCleanBuild: Bool = false
+	var useCustomDerivedData: Bool = false
+	var customDerivedDataPath: String = ""
 
     init() {}
 
@@ -61,6 +63,8 @@ final class MutationTestState: AnyMutationTestState {
 		randomizeTest = options.randomizeTest
 		mutationLimitType = options.mutationLimitType
 		isCleanBuild = options.isCleanBuild
+		useCustomDerivedData = options.useCustomDerivedData
+		customDerivedDataPath = options.customDerivedDataPath
     }
 }
 
